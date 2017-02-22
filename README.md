@@ -1,2 +1,2 @@
 # FryeBot
-FryeBot1.0
+Code repository for FryeBot1.0
