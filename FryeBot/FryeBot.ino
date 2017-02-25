@@ -1,38 +1,47 @@
-const int RED_GEAR_MOTOR_CONTROL = 9;
-const int YELLOW_GEAR_MOTOR_CONTROL = 10;
-int MOVE = 1;
-const int FULL_SPEED_ANALOG = 255;
-const int NO_MOVE_SPEED = 0;
+/*
+	This module uses the L293D chip to modulate and power
+	two DC motors controlling the wheels of the FryeBot
+*/
 
-/*This value will need to be tuned through testing*/
-const float RATIO_RED_YELLOW = 0.965;
+/*L293D INPUT 7*/
+const int YELLOW_GEAR_MOTOR_BACK = 8;
 
-const int RED_SPEED = FULL_SPEED_ANALOG;
-const int YELLOW_SPEED = (int)(RATIO_RED_YELLOW * (float)FULL_SPEED_ANALOG);
+/*L293D INPUT 2*/
+const int YELLOW_GEAR_MOTOR_FORWARD = 9;
 
-int millisecondsPassed = 1;
+/*L293D INPUT 10*/
+const int RED_GEAR_MOTOR_BACK = 10;
+
+/*L293D INPUT 15*/
+const int RED_GEAR_MOTOR_FORWARD = 11;
+
+/*
+	Establish ratio os the rate of the faster slower gear
+	to the faster gear to scale the duty cycle of the
+	faster gear
+*/
+const float RED_GEAR_SPEED_TO_YELLOW = 0.97;
+
+/*Constant for full duty cycle for analogWrite*/
+const int FULL_ANALOG_MOTOR_SPEED = 255;
 
 void setup() {
 	Serial.begin(9600);
 
 	/* add setup code here */
-	pinMode(RED_GEAR_MOTOR_CONTROL, OUTPUT);
-	pinMode(YELLOW_GEAR_MOTOR_CONTROL, OUTPUT);
-
+	pinMode(YELLOW_GEAR_MOTOR_FORWARD, OUTPUT);
+	pinMode(YELLOW_GEAR_MOTOR_BACK, OUTPUT);
+	pinMode(RED_GEAR_MOTOR_BACK, OUTPUT);
+	pinMode(RED_GEAR_MOTOR_FORWARD, OUTPUT);
 
 }
 
 void loop() {
 
-	MOVE = 1;
-	if (MOVE) {
-		analogWrite(RED_GEAR_MOTOR_CONTROL, RED_SPEED);
-		analogWrite(YELLOW_GEAR_MOTOR_CONTROL, YELLOW_SPEED);
-	}
-	else {
-		analogWrite(RED_GEAR_MOTOR_CONTROL, NO_MOVE_SPEED);
-		analogWrite(YELLOW_GEAR_MOTOR_CONTROL, NO_MOVE_SPEED);
-	}
+	analogWrite(YELLOW_GEAR_MOTOR_FORWARD, (int)(RED_GEAR_SPEED_TO_YELLOW * (float)FULL_ANALOG_MOTOR_SPEED));
+	digitalWrite(YELLOW_GEAR_MOTOR_BACK, LOW);
 
-	millisecondsPassed++;
+	digitalWrite(RED_GEAR_MOTOR_BACK, LOW);
+	digitalWrite(RED_GEAR_MOTOR_FORWARD, HIGH);
+
 }
