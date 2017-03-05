@@ -25,6 +25,12 @@ const float RED_GEAR_SPEED_TO_YELLOW = 0.97;
 /*Constant for full duty cycle for analogWrite*/
 const int FULL_ANALOG_MOTOR_SPEED = 255;
 
+
+const int pingPin = 7;
+
+long duration, cm;
+
+
 void setup() {
 	Serial.begin(9600);
 
@@ -34,14 +40,53 @@ void setup() {
 	pinMode(RED_GEAR_MOTOR_BACK, OUTPUT);
 	pinMode(RED_GEAR_MOTOR_FORWARD, OUTPUT);
 
+
 }
 
 void loop() {
 
-	analogWrite(YELLOW_GEAR_MOTOR_FORWARD, (int)(RED_GEAR_SPEED_TO_YELLOW * (float)FULL_ANALOG_MOTOR_SPEED));
-	digitalWrite(YELLOW_GEAR_MOTOR_BACK, LOW);
+	pinMode(pingPin, OUTPUT);
+	digitalWrite(pingPin, LOW);
+	delayMicroseconds(2);
+	digitalWrite(pingPin, HIGH);
+	delayMicroseconds(5);
+	digitalWrite(pingPin, LOW);
 
-	digitalWrite(RED_GEAR_MOTOR_BACK, LOW);
-	digitalWrite(RED_GEAR_MOTOR_FORWARD, HIGH);
+	pinMode(pingPin, INPUT);
+	duration = pulseIn(pingPin, HIGH);
 
+	cm = microsecondsToCentimeters(duration);
+
+	Serial.print(cm);
+	Serial.print("cm");
+	Serial.println();
+
+	if (cm > 12) {
+
+		analogWrite(YELLOW_GEAR_MOTOR_FORWARD, (int)(RED_GEAR_SPEED_TO_YELLOW * (float)FULL_ANALOG_MOTOR_SPEED));
+		digitalWrite(YELLOW_GEAR_MOTOR_BACK, LOW);
+
+		digitalWrite(RED_GEAR_MOTOR_BACK, LOW);
+		digitalWrite(RED_GEAR_MOTOR_FORWARD, HIGH);
+	}
+	else {
+		digitalWrite(YELLOW_GEAR_MOTOR_FORWARD, 0);
+		digitalWrite(YELLOW_GEAR_MOTOR_BACK, LOW);
+
+		digitalWrite(RED_GEAR_MOTOR_BACK, LOW);
+		digitalWrite(RED_GEAR_MOTOR_FORWARD, LOW);
+	}
+
+	delay(100);
+	
+
+
+}
+
+
+long microsecondsToCentimeters(long microseconds) {
+	// The speed of sound is 340 m/s or 29 microseconds per centimeter.
+	// The ping travels out and back, so to find the distance of the
+	// object we take half of the distance travelled.
+	return microseconds / 29 / 2;
 }

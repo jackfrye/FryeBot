@@ -80,7 +80,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="__vm\.FryeBot.vsarduino.h" />
+    <ClInclude Include="Grove_Ultrasonic_Ranger\Ultrasonic.h" />
+    <ClInclude Include="Serial_LCD\SerialLCD.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Grove_Ultrasonic_Ranger\Ultrasonic.cpp" />
+    <ClCompile Include="Serial_LCD\SerialLCD.cpp" />
   </ItemGroup>
   <PropertyGroup>
     <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>
